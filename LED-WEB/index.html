@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Círculo de Status</title>
+    <style>
+        /* Estilos para o círculo */
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 50px auto;
+            background-color: gray;
+            transition: background-color 0.2s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="circle" id="statusCircle"></div>
+
+    <script>
+        // Função para verificar o status do QR Code
+        async function checkQRCodeStatus() {
+            try {
+                const response = await fetch('http://localhost:8000/qrcode/1');
+                const data = await response.json();
+                const status = data.qrcode.valido;
+
+                const circle = document.getElementById('statusCircle');
+
+                // Verificar o valor de 'valido' e alterar a cor do círculo
+                if (status === 0) {
+                    circle.style.backgroundColor = 'gray';
+                } else if (status === 1) {
+                    circle.style.backgroundColor = 'green';
+                } else if (status === 2) {
+                    circle.style.backgroundColor = 'red';
+                }
+            } catch (error) {
+                console.error('Erro ao verificar o status do QR Code:', error);
+            }
+        }
+
+        // Requisição inicial ao carregar a página
+        checkQRCodeStatus();
+
+        // Escutar mudanças periodicamente (por exemplo, a cada 5 segundos)
+        setInterval(checkQRCodeStatus, 2000);
+    </script>
+</body>
+
+</html>
